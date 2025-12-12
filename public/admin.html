@@ -47,6 +47,7 @@
           <div class="tab" data-tab="users">Users</div>
           <div class="tab" data-tab="products">Products</div>
           <div class="tab" data-tab="inventory">Inventory</div>
+          <div class="tab" data-tab="orders">Orders</div>
           <div class="tab" data-tab="reports">Reports</div>
           <div class="tab" data-tab="settings">Settings</div>
         </div>
@@ -167,6 +168,84 @@
             <table class="table" id="inventoryTable"></table>
           </div>
         </div>
+
+        <div class="panel" id="panel-orders">
+  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+    <div>
+      <div style="font-weight:800">Order History & Tracking</div>
+      <div class="muted">Monitor all orders, search by order no/name, filter by date & status.</div>
+    </div>
+    <button class="btn" id="btnReloadOrders">Reload</button>
+  </div>
+
+  <div class="row" style="margin-top:12px">
+    <div>
+      <label>From</label>
+      <input class="input" id="oFrom" type="date" />
+    </div>
+    <div>
+      <label>To</label>
+      <input class="input" id="oTo" type="date" />
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:12px">
+    <div>
+      <label>Status</label>
+      <select id="oStatus">
+        <option value="">All</option>
+        <option value="pending">pending</option>
+        <option value="preparing">preparing</option>
+        <option value="ready">ready</option>
+        <option value="completed">completed</option>
+        <option value="cancelled">cancelled</option>
+      </select>
+    </div>
+    <div>
+      <label>Search (order no / name)</label>
+      <input class="input" id="oQuery" placeholder="e.g. SA-XXXX or Juan" />
+    </div>
+  </div>
+
+  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn secondary" id="btnRunOrders">Apply Filters</button>
+    <span class="muted" id="ordersCount">—</span>
+  </div>
+
+  <hr class="sep" />
+
+  <div style="overflow:auto">
+    <table class="table" id="ordersTable"></table>
+  </div>
+
+  <div id="orderDetails" class="card" style="margin-top:12px;display:none">
+    <div class="bd">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start">
+        <div>
+          <div class="muted">Order</div>
+          <div style="font-family:var(--mono);font-weight:900" id="odNo">—</div>
+          <div class="small" id="odMeta">—</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <a class="btn secondary" id="odTrack" href="#" target="_blank">Open Tracking</a>
+          <a class="btn secondary" id="odReceipt" href="#" target="_blank">Print Receipt</a>
+          <select id="odStatus" class="input" style="width:auto">
+            <option value="pending">pending</option>
+            <option value="preparing">preparing</option>
+            <option value="ready">ready</option>
+            <option value="completed">completed</option>
+            <option value="cancelled">cancelled</option>
+          </select>
+          <button class="btn" id="btnUpdateOrderStatus">Update Status</button>
+        </div>
+      </div>
+
+      <hr class="sep" />
+      <div id="odItems"></div>
+    </div>
+  </div>
+</div>
+
 
         <div class="panel" id="panel-reports">
           <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">

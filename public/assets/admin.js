@@ -278,6 +278,111 @@ async function runReport() {
   qs("#xlsxLink").href = `/api/reports/export.xlsx?from=${from}&to=${to}`;
 }
 
+async function loadOrders() {
+  const from = qs("#oFrom").value;
+  const to = qs("#oTo").value;
+  const status = qs("#oStatus").value;
+  const q = qs("#oQuery").value.trim();
+
+  const params = new URLSearchParams();
+  if (from) params.set("from", from);
+  if (to) params.set("to", to);
+  if (status) params.set("status", status);
+  if (q) params.set("q", q);
+
+  const r = await api(`/api/admin/orders?${params.toString()}`);
+  const orders = r.orders || [];
+  qs("#ordersCount").textContent = `${orders.length} order(s) shown (max 300)`;
+
+  const t = qs("#ordersTable");
+  t.innerHTML = `
+    <thead>
+      <tr>
+        <th>Created</th>
+        <th>Order No</th>
+        <th>Status</th>
+        <th>Source</th>
+        <th>Type</th>
+        <th>Payment</th>
+        <th>Total</th>
+        <th>Items</th>
+        <th>Customer</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${orders.map(o => `
+        <tr>
+          <td>${o.created_at}</td>
+          <td style="font-family:var(--mono)"><strong>${o.order_no}</strong></td>
+          <td><span class="status ${o.status}">${String(o.status).toUpperCase()}</span></td>
+          <td>${String(o.source||"").toUpperCase()}</td>
+          <td>${String(o.order_type||"").toUpperCase()}</td>
+          <td>${String(o.payment_method||"").toUpperCase()}</td>
+          <td>₱${money(o.subtotal)}</td>
+          <td>${o.item_count || 0}</td>
+          <td>${o.customer_name || ""}</td>
+          <td>
+            <button class="btn secondary" onclick="openOrderDetails(${o.id})">View</button>
+          </td>
+        </tr>
+      `).join("")}
+    </tbody>
+  `;
+  if (!orders.length) t.innerHTML = `<thead><tr><th>Orders</th></tr></thead><tbody><tr><td class="muted">No orders found for these filters.</td></tr></tbody>`;
+}
+
+let currentOrder = null;
+
+async function openOrderDetails(id) {
+  try {
+    const r = await api(`/api/admin/orders/${id}`);
+    currentOrder = r.order;
+    const items = r.items || [];
+
+    qs("#orderDetails").style.display = "";
+    qs("#odNo").textContent = currentOrder.order_no;
+    qs("#odMeta").textContent = `${currentOrder.created_at} • ${String(currentOrder.source||"").toUpperCase()} • ${String(currentOrder.order_type||"").toUpperCase()} • ${String(currentOrder.payment_method||"").toUpperCase()} • Total ₱${money(currentOrder.subtotal)}`;
+    qs("#odTrack").href = `/track.html?order=${encodeURIComponent(currentOrder.order_no)}`;
+    qs("#odReceipt").href = `/receipt.html?order=${encodeURIComponent(currentOrder.order_no)}`;
+    qs("#odStatus").value = currentOrder.status;
+
+    qs("#odItems").innerHTML = `
+      <table class="table">
+        <thead><tr><th>Item</th><th>Qty</th><th>Notes</th><th class="right">Line</th></tr></thead>
+        <tbody>
+          ${items.map(it => {
+            const line = Number(it.price_snapshot) * Number(it.qty);
+            return `<tr>
+              <td>${it.name_snapshot}</td>
+              <td>${it.qty}</td>
+              <td>${it.notes || ""}</td>
+              <td class="right">₱${money(line)}</td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+    setTab("orders");
+  } catch(e) {
+    toast(e.message);
+  }
+}
+
+async function updateOrderStatus() {
+  if (!currentOrder) return toast("No order selected");
+  const status = qs("#odStatus").value;
+  try {
+    await api(`/api/orders/${currentOrder.id}/status`, { method:"PUT", body: JSON.stringify({ status }) });
+    toast("Order status updated");
+    await loadOrders();
+    await openOrderDetails(currentOrder.id);
+  } catch(e) {
+    toast(e.message);
+  }
+}
+
+
 async function loadSettings() {
   const s = await api("/api/settings/gcash");
   qs("#sNumber").value = s.number || "";
@@ -327,6 +432,10 @@ async function init() {
 
   qs("#btnReloadInventory").onclick = loadInventory;
   qs("#btnAdjust").onclick = adjustInventory;
+
+  qs("#btnRunOrders").onclick = loadOrders;
+  qs("#btnReloadOrders").onclick = loadOrders;
+  qs("#btnUpdateOrderStatus").onclick = updateOrderStatus;
 
   qs("#btnRunReport").onclick = runReport;
 

@@ -167,4 +167,48 @@ router.post("/inventory/adjust", requireRole("admin","staff"), (req, res) => {
   }
 });
 
+// ---- Orders history (Admin/Staff) ----
+router.get("/orders", requireRole("admin","staff"), (req, res) => {
+  const db = getDb();
+  const from = req.query.from ? String(req.query.from) : "";
+  const to = req.query.to ? String(req.query.to) : "";
+  const status = req.query.status ? String(req.query.status) : "";
+  const q = req.query.q ? String(req.query.q).trim() : "";
+
+  const fromSql = from ? `${from} 00:00:00` : "1970-01-01 00:00:00";
+  const toSql = to ? `${to} 23:59:59` : "2999-12-31 23:59:59";
+
+  let where = "o.created_at BETWEEN ? AND ?";
+  const args = [fromSql, toSql];
+
+  if (status && ["pending","preparing","ready","completed","cancelled"].includes(status)) {
+    where += " AND o.status = ?";
+    args.push(status);
+  }
+  if (q) {
+    where += " AND (o.order_no LIKE ? OR o.customer_name LIKE ?)";
+    args.push(`%${q}%`, `%${q}%`);
+  }
+
+  const rows = db.prepare(`
+    SELECT o.*,
+           (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id=o.id) AS item_count
+    FROM orders o
+    WHERE ${where}
+    ORDER BY o.created_at DESC
+    LIMIT 300
+  `).all(...args);
+
+  res.json({ orders: rows });
+});
+
+router.get("/orders/:id", requireRole("admin","staff"), (req, res) => {
+  const db = getDb();
+  const id = Number(req.params.id);
+  const order = db.prepare("SELECT * FROM orders WHERE id=?").get(id);
+  if (!order) return res.status(404).json({ message: "Order not found" });
+  const items = db.prepare("SELECT name_snapshot, price_snapshot, qty, notes FROM order_items WHERE order_id=? ORDER BY id ASC").all(id);
+  res.json({ order, items });
+});
+
 module.exports = router;
