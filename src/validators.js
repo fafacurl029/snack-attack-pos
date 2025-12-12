@@ -23,7 +23,7 @@ const createOrderSchema = z.object({
   cashReceived: z.number().optional(),
   items: z.array(orderItemSchema).min(1).max(60)
 }).superRefine((o, ctx) => {
-  if (o.source === \"customer\") {
+  if (o.source === "customer") {
     if (!String(o.customerName||\"\").trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: \"Customer name is required\", path: [\"customerName\"] });
     if (!String(o.phone||\"\").trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: \"Phone number is required\", path: [\"phone\"] });
     if (!String(o.address||\"\").trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: \"Exact address is required\", path: [\"address\"] });
