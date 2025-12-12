@@ -115,7 +115,7 @@ async function loadGcash() {
 function toggleGcashBox() {
   const pm = qs("#paymentMethod").value;
   qs("#gcashBox").classList.toggle("hidden", pm !== "gcash");
-  qs("#gcashRef").required = (qs("#paymentMethod").value === \"gcash\");
+  qs("#gcashRef").required = (qs("#paymentMethod").value === "gcash");
 }
 
 async function placeOrder() {

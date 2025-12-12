@@ -5,6 +5,28 @@ const bcrypt = require("bcryptjs");
 
 let db;
 
+
+function migrateOrdersColumns(db) {
+  try {
+    const cols = db.prepare("PRAGMA table_info('orders')").all().map(r => r.name);
+    const ensureCol = (name, ddl) => {
+      if (!cols.includes(name)) {
+        db.exec(ddl);
+      }
+    };
+    // Backward-compatible columns for older DBs
+    ensureCol("phone", "ALTER TABLE orders ADD COLUMN phone TEXT;");
+    ensureCol("address", "ALTER TABLE orders ADD COLUMN address TEXT;");
+    ensureCol("gcash_ref", "ALTER TABLE orders ADD COLUMN gcash_ref TEXT;");
+    ensureCol("payment_status", "ALTER TABLE orders ADD COLUMN payment_status TEXT DEFAULT 'unpaid';");
+    ensureCol("cash_received", "ALTER TABLE orders ADD COLUMN cash_received REAL;");
+    ensureCol("change_due", "ALTER TABLE orders ADD COLUMN change_due REAL;");
+  } catch (e) {
+    // If orders table doesn't exist yet, CREATE TABLE will handle it
+  }
+}
+
+
 function initDb(dataDir) {
   const dbPath = path.join(dataDir, "snackattack.sqlite");
   const firstTime = !fs.existsSync(dbPath);
@@ -102,6 +124,8 @@ function initDb(dataDir) {
     );
   `);
 
+
+  migrateOrdersColumns(db);
 // Lightweight migrations for existing databases
 try {
   const cols = db.prepare("PRAGMA table_info(orders)").all().map(r => r.name);
