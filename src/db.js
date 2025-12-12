@@ -65,6 +65,7 @@ function initDb(dataDir) {
       source TEXT NOT NULL CHECK(source IN ('customer','pos')),
       customer_name TEXT,
       phone TEXT,
+      address TEXT,
       order_type TEXT NOT NULL CHECK(order_type IN ('dine-in','takeout')),
       payment_method TEXT NOT NULL CHECK(payment_method IN ('cash','gcash')),
       payment_status TEXT NOT NULL CHECK(payment_status IN ('unpaid','paid')) DEFAULT 'unpaid',
@@ -100,6 +101,17 @@ function initDb(dataDir) {
       FOREIGN KEY(user_id) REFERENCES users(id)
     );
   `);
+
+// Lightweight migrations for existing databases
+try {
+  const cols = db.prepare("PRAGMA table_info(orders)").all().map(r => r.name);
+  if (!cols.includes("address")) {
+    db.exec("ALTER TABLE orders ADD COLUMN address TEXT");
+  }
+} catch (e) {
+  // ignore migration errors; app will still function on fresh DB
+}
+
 
   // Ensure default settings
   const upsertSetting = db.prepare(`INSERT INTO settings(key,value) VALUES(?,?)

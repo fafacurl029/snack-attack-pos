@@ -75,14 +75,15 @@ router.post("/", (req, res) => {
   const tx = db.transaction(() => {
     // Insert order
     const insOrder = db.prepare(`
-      INSERT INTO orders(order_no,source,customer_name,phone,order_type,payment_method,payment_status,gcash_ref,cash_received,change_due,status,subtotal,served_by_user_id)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+      INSERT INTO orders(order_no,source,customer_name,phone,address,order_type,payment_method,payment_status,gcash_ref,cash_received,change_due,status,subtotal,served_by_user_id)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     `);
     const info = insOrder.run(
       orderNo,
       o.source,
       o.customerName || "",
       o.phone || "",
+      o.address || "",
       o.orderType,
       o.paymentMethod,
       paymentStatus,

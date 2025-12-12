@@ -342,7 +342,7 @@ async function openOrderDetails(id) {
 
     qs("#orderDetails").style.display = "";
     qs("#odNo").textContent = currentOrder.order_no;
-    qs("#odMeta").textContent = `${currentOrder.created_at} • ${String(currentOrder.source||"").toUpperCase()} • ${String(currentOrder.order_type||"").toUpperCase()} • ${String(currentOrder.payment_method||"").toUpperCase()} • Total ₱${money(currentOrder.subtotal)}`;
+    qs("#odMeta").textContent = `${currentOrder.created_at} • ${String(currentOrder.source||"").toUpperCase()} • ${String(currentOrder.order_type||"").toUpperCase()} • ${String(currentOrder.payment_method||"").toUpperCase()} • Total ₱${money(currentOrder.subtotal)}${currentOrder.customer_name ? " • " + currentOrder.customer_name : ""}${currentOrder.phone ? " • " + currentOrder.phone : ""}${currentOrder.address ? " • " + currentOrder.address : ""}`;
     qs("#odTrack").href = `/track.html?order=${encodeURIComponent(currentOrder.order_no)}`;
     qs("#odReceipt").href = `/receipt.html?order=${encodeURIComponent(currentOrder.order_no)}`;
     qs("#odStatus").value = currentOrder.status;

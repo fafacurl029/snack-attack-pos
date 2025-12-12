@@ -115,6 +115,7 @@ async function loadGcash() {
 function toggleGcashBox() {
   const pm = qs("#paymentMethod").value;
   qs("#gcashBox").classList.toggle("hidden", pm !== "gcash");
+  qs("#gcashRef").required = (qs("#paymentMethod").value === \"gcash\");
 }
 
 async function placeOrder() {
@@ -125,14 +126,26 @@ async function placeOrder() {
   }));
   if (items.length === 0) return toast("Cart is empty");
 
+  const customerName = qs("#customerName").value.trim();
+  const phone = qs("#phone").value.trim();
+  const address = qs("#address").value.trim();
+  const paymentMethod = qs("#paymentMethod").value;
+  const gcashRef = qs("#gcashRef").value.trim();
+
+  if (!customerName) return toast("Customer name is required");
+  if (!phone) return toast("Phone number is required");
+  if (!address) return toast("Exact address is required");
+  if (paymentMethod === "gcash" && !gcashRef) return toast("GCash reference number is required");
+
   const payload = {
     source: "customer",
-    customerName: qs("#customerName").value.trim(),
-    phone: qs("#phone").value.trim(),
+    customerName: customerName,
+    phone: phone,
+    address: qs("#address").value.trim(),
     orderType: qs("#orderType").value,
-    paymentMethod: qs("#paymentMethod").value,
+    paymentMethod: paymentMethod,
     paymentStatus: "unpaid",
-    gcashRef: qs("#gcashRef").value.trim(),
+    gcashRef: gcashRef,
     items
   };
 

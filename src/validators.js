@@ -15,13 +15,22 @@ const createOrderSchema = z.object({
   source: z.enum(["customer","pos"]),
   customerName: z.string().max(80).optional().default(""),
   phone: z.string().max(30).optional().default(""),
+  address: z.string().max(200).optional().default(""),
   orderType: z.enum(["dine-in","takeout"]),
   paymentMethod: z.enum(["cash","gcash"]),
   paymentStatus: z.enum(["unpaid","paid"]).optional().default("unpaid"),
   gcashRef: z.string().max(60).optional().default(""),
   cashReceived: z.number().optional(),
   items: z.array(orderItemSchema).min(1).max(60)
+}).superRefine((o, ctx) => {
+  if (o.source === \"customer\") {
+    if (!String(o.customerName||\"\").trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: \"Customer name is required\", path: [\"customerName\"] });
+    if (!String(o.phone||\"\").trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: \"Phone number is required\", path: [\"phone\"] });
+    if (!String(o.address||\"\").trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: \"Exact address is required\", path: [\"address\"] });
+    if (o.paymentMethod === \"gcash\" && !String(o.gcashRef||\"\").trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: \"GCash reference number is required\", path: [\"gcashRef\"] });
+  }
 });
+
 
 const statusSchema = z.object({
   status: z.enum(["pending","preparing","ready","completed","cancelled"])

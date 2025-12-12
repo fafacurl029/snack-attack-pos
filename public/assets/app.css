@@ -232,3 +232,14 @@ hr.sep{border:0;border-top:1px solid var(--border);margin:14px 0}
 }
 .footer-actions{display:flex;gap:10px;flex-wrap:wrap}
 .hidden{display:none !important;}
+
+.req{color: var(--accent); font-weight:800;}
+
+
+/* customer mobile tweaks */
+@media (max-width: 560px){
+  .topbar .inner{flex-wrap:wrap}
+  .topbar .nav{width:100%;justify-content:flex-start}
+  .footer-actions .btn{flex:1; min-width:140px}
+  .badge{padding:6px 9px}
+}

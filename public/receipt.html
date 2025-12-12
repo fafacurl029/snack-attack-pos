@@ -86,6 +86,14 @@
       q("#sub").textContent = money(o.subtotal);
       q("#pay").textContent = String(o.payment_method || "").toUpperCase();
 
+      q("#cust").textContent = `${o.customer_name || ""}${o.phone ? " • " + o.phone : ""}`.trim() || "—";
+      q("#addr").textContent = (o.address || "—");
+      if (o.payment_method === "gcash") {
+        q("#ref").style.display = "";
+        q("#ref").textContent = `Ref: ${o.gcash_ref || "—"}`;
+      }
+
+
       if (o.payment_method === "cash" && o.cash_received != null) {
         q("#cashRow").style.display = "";
         q("#changeRow").style.display = "";

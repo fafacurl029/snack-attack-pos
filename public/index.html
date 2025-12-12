@@ -57,14 +57,22 @@
 
           <div class="row">
             <div>
-              <label>Customer name</label>
-              <input class="input" id="customerName" placeholder="Optional" />
+              <label>Customer name <span class="req">*</span></label>
+              <input class="input" id="customerName" placeholder="Enter your name" required />
             </div>
             <div>
-              <label>Phone</label>
-              <input class="input" id="phone" placeholder="Optional" />
+              <label>Phone <span class="req">*</span></label>
+              <input class="input" id="phone" placeholder="09XXXXXXXXX" required inputmode="tel" />
             </div>
           </div>
+
+
+<div class="row">
+  <div style="grid-column:1 / -1">
+    <label>Exact address <span class="req">*</span></label>
+    <input class="input" id="address" placeholder="House/Unit, Street, Barangay, City" required />
+  </div>
+</div>
 
           <div class="row">
             <div>
@@ -88,7 +96,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
                 <div>
                   <div style="font-weight:800">GCash Payment</div>
-                  <div class="muted">Use the QR or number below. Optional reference number.</div>
+                  <div class="muted">Use the QR or number below. Reference number is required for GCash.</div>
                 </div>
                 <span class="tag">GCash</span>
               </div>
@@ -102,7 +110,7 @@
                   <div id="gcashQrWrap" style="margin-top:6px"></div>
                 </div>
               </div>
-              <label style="margin-top:10px">Reference (optional)</label>
+              <label style="margin-top:10px">Reference number <span class="req">*</span></label>
               <input class="input" id="gcashRef" placeholder="e.g. 1234567890" />
             </div>
           </div>

@@ -27,6 +27,19 @@ async function track() {
         </div>
       </div>
       <hr class="sep" />
+      <div class="row">
+        <div>
+          <div class="muted">Customer</div>
+          <div style="font-weight:800">${o.customer_name || "—"}</div>
+          <div class="small">Phone: ${o.phone || "—"}</div>
+        </div>
+        <div>
+          <div class="muted">Address</div>
+          <div class="small">${o.address || "—"}</div>
+          ${o.payment_method === "gcash" ? `<div class="small">Ref: ${o.gcash_ref || "—"}</div>` : ``}
+        </div>
+      </div>
+      <hr class="sep" />
       <table class="table">
         <thead><tr><th>Item</th><th>Qty</th><th>Notes</th></tr></thead>
         <tbody>
