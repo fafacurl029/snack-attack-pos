@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snack Attack — Kitchen</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+  <style>
+    .kgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    @media (max-width: 1100px){.kgrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media (max-width: 680px){.kgrid{grid-template-columns:1fr}}
+    .kcard{padding:14px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.03)}
+    .kitems{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .kitem{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+    .kitem small{color:var(--muted)}
+    .kactions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Snack Attack</h1>
+          <small>Kitchen Screen</small>
+        </div>
+      </div>
+      <div class="nav">
+        <span class="badge" id="meBadge">—</span>
+        <a class="badge" href="/login.html">Login</a>
+        <a class="badge" href="/pos.html">POS</a>
+        <a class="badge" href="/admin.html">Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="hd">
+        <div>
+          <h2>Active Orders</h2>
+          <div class="muted">Auto-refresh every 3 seconds.</div>
+        </div>
+        <div class="tag" id="countTag">0</div>
+      </div>
+      <div class="bd">
+        <div class="kgrid" id="kgrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/kitchen.js"></script>
+</body>
+</html>

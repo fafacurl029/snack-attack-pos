@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snack Attack — POS</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Snack Attack</h1>
+          <small>POS Mode (Cashier)</small>
+        </div>
+      </div>
+      <div class="nav">
+        <span class="badge" id="meBadge">—</span>
+        <a class="badge" href="/login.html">Login</a>
+        <a class="badge" href="/kitchen.html">Kitchen</a>
+        <a class="badge" href="/admin.html">Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>Quick Menu</h2>
+            <div class="muted">Tap to add items. Works fast on mobile.</div>
+          </div>
+          <div class="pills" id="categoryPills"></div>
+        </div>
+        <div class="bd">
+          <div class="product-grid" id="productGrid"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>POS Cart</h2>
+            <div class="muted">Cash + change or GCash paid.</div>
+          </div>
+          <div class="tag" id="cartCount">0 item</div>
+        </div>
+        <div class="bd">
+          <div id="cartList"></div>
+          <hr class="sep" />
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="muted">Subtotal</div>
+            <div style="font-weight:900" id="subtotal">₱0.00</div>
+          </div>
+          <hr class="sep" />
+
+          <div class="row">
+            <div>
+              <label>Customer name</label>
+              <input class="input" id="customerName" placeholder="Optional" />
+            </div>
+            <div>
+              <label>Order type</label>
+              <select id="orderType">
+                <option value="takeout">Takeout</option>
+                <option value="dine-in">Dine-in</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Payment method</label>
+              <select id="paymentMethod">
+                <option value="cash">Cash</option>
+                <option value="gcash">GCash</option>
+              </select>
+            </div>
+            <div id="cashBox">
+              <label>Cash received</label>
+              <input class="input" id="cashReceived" type="number" step="0.01" placeholder="0.00" />
+              <div class="small" style="margin-top:6px">Change: <span id="changeDue" style="font-family:var(--mono)">0.00</span></div>
+            </div>
+          </div>
+
+          <label>GCash reference (optional)</label>
+          <input class="input" id="gcashRef" placeholder="Optional" />
+
+          <div style="margin-top:14px" class="footer-actions">
+            <button class="btn" id="btnPay">Pay & Send to Kitchen</button>
+            <button class="btn secondary" id="btnClear">Clear</button>
+          </div>
+
+          <div id="afterPay" class="hidden" style="margin-top:14px">
+            <hr class="sep" />
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <div>
+                <div class="muted">Last order</div>
+                <div style="font-family:var(--mono);font-weight:900" id="lastOrderNo">—</div>
+              </div>
+              <button class="btn secondary" id="btnReceipt">Print Receipt</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/pos.js"></script>
+</body>
+</html>

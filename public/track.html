@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snack Attack — Track</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Snack Attack</h1>
+          <small>Order Tracking</small>
+        </div>
+      </div>
+      <div class="nav">
+        <a class="badge" href="/">Order</a>
+        <a class="badge" href="/login.html">Staff Login</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="hd">
+        <div>
+          <h2>Track Your Order</h2>
+          <div class="muted">Enter your order number (example: SA-XXXX-XXXX).</div>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="row">
+          <div>
+            <label>Order Number</label>
+            <input id="orderNo" class="input" placeholder="SA-..." />
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:10px">
+            <button class="btn" id="btnTrack">Track</button>
+            <button class="btn secondary" id="btnCopy">Copy Link</button>
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <div id="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/track.js"></script>
+</body>
+</html>

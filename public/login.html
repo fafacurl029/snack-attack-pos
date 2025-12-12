@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snack Attack — Login</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Snack Attack</h1>
+          <small>Staff Login</small>
+        </div>
+      </div>
+      <div class="nav">
+        <a class="badge" href="/">Order</a>
+        <a class="badge" href="/track.html">Track</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="max-width:680px">
+    <div class="card">
+      <div class="hd">
+        <div>
+          <h2>Sign in</h2>
+          <div class="muted">Admin / Staff / Kitchen</div>
+        </div>
+      </div>
+      <div class="bd">
+        <label>Username</label>
+        <input class="input" id="username" placeholder="admin" />
+        <label>Password</label>
+        <input class="input" id="password" placeholder="••••••••" type="password" />
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="btnLogin">Login</button>
+          <button class="btn secondary" id="btnLogout">Logout</button>
+        </div>
+
+        <hr class="sep" />
+        <div class="muted" id="who"></div>
+
+        <hr class="sep" />
+        <div class="row">
+          <a class="btn secondary" href="/pos.html">Open POS</a>
+          <a class="btn secondary" href="/kitchen.html">Open Kitchen Screen</a>
+          <a class="btn secondary" href="/admin.html">Open Admin</a>
+        </div>
+
+        <div class="small" style="margin-top:12px;color:var(--muted)">
+          Default accounts are in README. Please change passwords after deploy.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/login.js"></script>
+</body>
+</html>

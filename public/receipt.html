@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Receipt</title>
+  <style>
+    body{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; margin:0; padding:12px;}
+    .receipt{width: 80mm; max-width: 80mm;}
+    h1{font-size:16px; margin:0; text-align:center;}
+    .center{text-align:center}
+    .muted{opacity:.7}
+    hr{border:0;border-top:1px dashed #000; margin:8px 0;}
+    table{width:100%; border-collapse:collapse; font-size:12px;}
+    td{padding:3px 0; vertical-align:top;}
+    .right{text-align:right}
+    @media print {
+      body{padding:0}
+      .actions{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+    <button onclick="window.print()">Print</button>
+    <button onclick="window.close()">Close</button>
+  </div>
+
+  <div class="receipt" id="r">
+    <h1>SNACK ATTACK</h1>
+    <div class="center muted">Food Cart Receipt</div>
+    <hr />
+    <div id="meta" class="muted"></div>
+    <hr />
+    <table id="items"></table>
+    <hr />
+    <table>
+      <tr><td>Subtotal</td><td class="right" id="sub">0.00</td></tr>
+      <tr id="cashRow" style="display:none"><td>Cash</td><td class="right" id="cash">0.00</td></tr>
+      <tr id="changeRow" style="display:none"><td>Change</td><td class="right" id="change">0.00</td></tr>
+      <tr><td>Payment</td><td class="right" id="pay">—</td></tr>
+    </table>
+    <hr />
+    <div class="center muted">Thank you!</div>
+  </div>
+
+  <script>
+    async function api(url) {
+      const res = await fetch(url, { credentials: "include" });
+      const data = await res.json().catch(()=>({}));
+      if (!res.ok) throw new Error(data.message || "Request failed");
+      return data;
+    }
+    function money(n){ return (Math.round((Number(n)+Number.EPSILON)*100)/100).toFixed(2); }
+    function q(sel){ return document.querySelector(sel); }
+
+    function getOrderNo() {
+      const u = new URL(location.href);
+      return u.searchParams.get("order") || "";
+    }
+
+    async function init() {
+      const orderNo = getOrderNo();
+      if (!orderNo) { q("#r").innerHTML = "Missing order"; return; }
+      // Need order id: lookup via track then fetch by status not possible; so use track and render basic receipt without auth.
+      // BUT for POS we want cash/change; tracking has these fields already. We’ll use the public tracking endpoint.
+      const r = await api("/api/orders/track/" + encodeURIComponent(orderNo));
+      const o = r.order;
+      const items = r.items;
+
+      q("#meta").innerHTML = `
+        <div>Order: <strong>${o.order_no}</strong></div>
+        <div>Date: ${o.created_at}</div>
+        <div>Type: ${String(o.order_type||"").toUpperCase()}</div>
+        <div>Status: ${String(o.status||"").toUpperCase()}</div>
+      `;
+
+      const tbl = q("#items");
+      tbl.innerHTML = items.map(it => {
+        const line = Number(it.price_snapshot) * Number(it.qty);
+        return `
+          <tr><td>${it.name_snapshot} x${it.qty}${it.notes ? "<br><span class='muted'>"+it.notes+"</span>" : ""}</td><td class="right">${money(line)}</td></tr>
+        `;
+      }).join("");
+
+      q("#sub").textContent = money(o.subtotal);
+      q("#pay").textContent = String(o.payment_method || "").toUpperCase();
+
+      if (o.payment_method === "cash" && o.cash_received != null) {
+        q("#cashRow").style.display = "";
+        q("#changeRow").style.display = "";
+        q("#cash").textContent = money(o.cash_received);
+        q("#change").textContent = money(o.change_due || 0);
+      }
+      // Auto print hint
+      setTimeout(() => window.print(), 600);
+    }
+    init().catch(e => { q("#r").innerHTML = e.message; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snack Attack — Admin</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+  <style>
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:8px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);cursor:pointer;color:var(--muted)}
+    .tab.active{color:var(--text);border-color:rgba(88,166,255,.45);background:rgba(88,166,255,.10)}
+    .panel{display:none}
+    .panel.active{display:block}
+    .formRow{display:grid;grid-template-columns: repeat(4, minmax(0,1fr));gap:10px}
+    @media(max-width: 980px){.formRow{grid-template-columns:1fr 1fr}}
+    @media(max-width: 560px){.formRow{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Snack Attack</h1>
+          <small>Admin Dashboard</small>
+        </div>
+      </div>
+      <div class="nav">
+        <span class="badge" id="meBadge">—</span>
+        <a class="badge" href="/login.html">Login</a>
+        <a class="badge" href="/pos.html">POS</a>
+        <a class="badge" href="/kitchen.html">Kitchen</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="hd">
+        <div>
+          <h2>Control Center</h2>
+          <div class="muted">Users • Products • Inventory • Reports • Settings</div>
+        </div>
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-tab="overview">Overview</div>
+          <div class="tab" data-tab="users">Users</div>
+          <div class="tab" data-tab="products">Products</div>
+          <div class="tab" data-tab="inventory">Inventory</div>
+          <div class="tab" data-tab="reports">Reports</div>
+          <div class="tab" data-tab="settings">Settings</div>
+        </div>
+      </div>
+
+      <div class="bd">
+        <div class="panel active" id="panel-overview">
+          <div class="row">
+            <div class="card"><div class="bd">
+              <div class="muted">Today sales (completed)</div>
+              <div style="font-size:28px;font-weight:900" id="todaySales">₱0.00</div>
+              <div class="small">Orders: <span id="todayOrders">0</span></div>
+            </div></div>
+            <div class="card"><div class="bd">
+              <div class="muted">Profit (range)</div>
+              <div style="font-size:28px;font-weight:900" id="rangeProfit">₱0.00</div>
+              <div class="small">Set dates in Reports tab</div>
+            </div></div>
+          </div>
+          <hr class="sep" />
+          <div class="muted">Top Items (range)</div>
+          <div id="topItems"></div>
+        </div>
+
+        <div class="panel" id="panel-users">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+            <div>
+              <div style="font-weight:800">User Management</div>
+              <div class="muted">Create / edit / disable accounts.</div>
+            </div>
+            <button class="btn" id="btnReloadUsers">Reload</button>
+          </div>
+          <hr class="sep" />
+          <div class="formRow">
+            <div><label>Username</label><input class="input" id="uUsername" placeholder="newuser" /></div>
+            <div><label>Password</label><input class="input" id="uPassword" placeholder="Min 8 chars" /></div>
+            <div><label>Role</label>
+              <select id="uRole">
+                <option value="staff">staff</option>
+                <option value="kitchen">kitchen</option>
+                <option value="admin">admin</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end"><button class="btn" id="btnCreateUser">Create User</button></div>
+          </div>
+          <hr class="sep" />
+          <div style="overflow:auto">
+            <table class="table" id="usersTable"></table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-products">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+            <div>
+              <div style="font-weight:800">Products</div>
+              <div class="muted">Add/edit menu items + stock settings.</div>
+            </div>
+            <button class="btn" id="btnReloadProducts">Reload</button>
+          </div>
+          <hr class="sep" />
+          <div class="formRow">
+            <div><label>Name</label><input class="input" id="pName" placeholder="Item name" /></div>
+            <div><label>Category</label><input class="input" id="pCategory" placeholder="Food / Drinks / Extras" /></div>
+            <div><label>Price</label><input class="input" id="pPrice" type="number" step="0.01" /></div>
+            <div><label>Cost</label><input class="input" id="pCost" type="number" step="0.01" /></div>
+
+            <div><label>SKU (optional)</label><input class="input" id="pSku" /></div>
+            <div><label>Image URL (optional)</label><input class="input" id="pImageUrl" /></div>
+            <div><label>Quantity</label><input class="input" id="pQty" type="number" /></div>
+            <div><label>Low stock threshold</label><input class="input" id="pLow" type="number" /></div>
+
+            <div><label>Active</label>
+              <select id="pActive">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div><label>Track stock</label>
+              <select id="pTrack">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end"><button class="btn" id="btnCreateProduct">Add Product</button></div>
+          </div>
+          <hr class="sep" />
+          <div style="overflow:auto">
+            <table class="table" id="productsTable"></table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-inventory">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+            <div>
+              <div style="font-weight:800">Inventory</div>
+              <div class="muted">Adjust stock with logs.</div>
+            </div>
+            <button class="btn" id="btnReloadInventory">Reload</button>
+          </div>
+          <hr class="sep" />
+          <div class="row">
+            <div>
+              <label>Product</label>
+              <select id="invProduct"></select>
+            </div>
+            <div>
+              <label>Delta (+ add, - remove)</label>
+              <input class="input" id="invDelta" type="number" />
+            </div>
+          </div>
+          <label>Reason</label>
+          <input class="input" id="invReason" placeholder="Restock / spoilage / etc." />
+          <div style="margin-top:12px">
+            <button class="btn" id="btnAdjust">Apply</button>
+          </div>
+          <hr class="sep" />
+          <div style="overflow:auto">
+            <table class="table" id="inventoryTable"></table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-reports">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+            <div>
+              <div style="font-weight:800">Reports</div>
+              <div class="muted">Filter by date range; export CSV/Excel.</div>
+            </div>
+            <button class="btn" id="btnRunReport">Run</button>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label>From</label>
+              <input class="input" id="rFrom" type="date" />
+            </div>
+            <div>
+              <label>To</label>
+              <input class="input" id="rTo" type="date" />
+            </div>
+          </div>
+
+          <hr class="sep" />
+
+          <div class="row">
+            <div class="card"><div class="bd">
+              <div class="muted">Sales</div>
+              <div style="font-size:28px;font-weight:900" id="rSales">₱0.00</div>
+            </div></div>
+            <div class="card"><div class="bd">
+              <div class="muted">Orders</div>
+              <div style="font-size:28px;font-weight:900" id="rOrders">0</div>
+            </div></div>
+          </div>
+
+          <div class="card" style="margin-top:12px"><div class="bd">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+              <div>
+                <div style="font-weight:800">Export</div>
+                <div class="muted">Download report files for Excel.</div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <a class="btn secondary" id="csvLink" href="#" download>Export CSV</a>
+                <a class="btn secondary" id="xlsxLink" href="#" download>Export Excel</a>
+              </div>
+            </div>
+          </div></div>
+
+          <hr class="sep" />
+          <div class="muted">Top Items</div>
+          <div id="rTop"></div>
+        </div>
+
+        <div class="panel" id="panel-settings">
+          <div style="font-weight:800">Settings</div>
+          <div class="muted">Update GCash number and upload QR image.</div>
+          <hr class="sep" />
+          <label>GCash Number</label>
+          <input class="input" id="sNumber" />
+          <label>Upload QR (PNG/JPG)</label>
+          <input class="input" id="sQr" type="file" accept="image/*" />
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn" id="btnSaveSettings">Save</button>
+            <span class="muted" id="sStatus">—</span>
+          </div>
+          <hr class="sep" />
+          <div class="muted">Current QR</div>
+          <div id="sQrPreview" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/admin.js"></script>
+</body>
+</html>

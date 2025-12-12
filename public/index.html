@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snack Attack — Order</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Snack Attack</h1>
+          <small>Order Online • Track Your Order</small>
+        </div>
+      </div>
+      <div class="nav">
+        <a class="badge" href="/track.html">Track</a>
+        <a class="badge" href="/login.html">Staff Login</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>Menu</h2>
+            <div class="muted">Pick items, add notes, then checkout.</div>
+          </div>
+          <div class="pills" id="categoryPills"></div>
+        </div>
+        <div class="bd">
+          <div class="product-grid" id="productGrid"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>Your Cart</h2>
+            <div class="muted">Fast checkout. No account required.</div>
+          </div>
+          <div class="tag" id="cartCount">0 item</div>
+        </div>
+        <div class="bd">
+          <div id="cartList"></div>
+          <hr class="sep" />
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="muted">Subtotal</div>
+            <div style="font-weight:800" id="subtotal">₱0.00</div>
+          </div>
+          <hr class="sep" />
+
+          <div class="row">
+            <div>
+              <label>Customer name</label>
+              <input class="input" id="customerName" placeholder="Optional" />
+            </div>
+            <div>
+              <label>Phone</label>
+              <input class="input" id="phone" placeholder="Optional" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Order type</label>
+              <select id="orderType">
+                <option value="takeout">Takeout</option>
+                <option value="dine-in">Dine-in</option>
+              </select>
+            </div>
+            <div>
+              <label>Payment</label>
+              <select id="paymentMethod">
+                <option value="cash">Cash (pay on pickup)</option>
+                <option value="gcash">GCash / QR</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="gcashBox" class="card" style="margin-top:12px;">
+            <div class="bd">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div>
+                  <div style="font-weight:800">GCash Payment</div>
+                  <div class="muted">Use the QR or number below. Optional reference number.</div>
+                </div>
+                <span class="tag">GCash</span>
+              </div>
+              <div style="margin-top:10px" class="row">
+                <div>
+                  <div class="muted">Number</div>
+                  <div id="gcashNumber" style="font-family:var(--mono);font-size:14px;margin-top:6px">—</div>
+                </div>
+                <div>
+                  <div class="muted">QR</div>
+                  <div id="gcashQrWrap" style="margin-top:6px"></div>
+                </div>
+              </div>
+              <label style="margin-top:10px">Reference (optional)</label>
+              <input class="input" id="gcashRef" placeholder="e.g. 1234567890" />
+            </div>
+          </div>
+
+          <div style="margin-top:14px" class="footer-actions">
+            <button class="btn" id="placeOrder">Place Order</button>
+            <button class="btn secondary" id="clearCart">Clear</button>
+          </div>
+          <div class="small" style="margin-top:10px;color:var(--muted)">
+            Tip: After placing, you’ll get an Order Number for tracking.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/assets/app.js"></script>
+  <script src="/assets/customer.js"></script>
+</body>
+</html>
